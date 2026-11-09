@@ -1,0 +1,259 @@
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - RaceDayMVC</title>
+
+    <!-- Bootstrap styling -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Custom application styling -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/RaceDayMVC.styles.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+
+    <!-- Navigation bar -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow mb-3">
+
+            <div class="container-fluid">
+
+                <!-- Application name -->
+                <a class="navbar-brand"
+                   asp-controller="Home"
+                   asp-action="Index">
+                    RaceDayMVC
+                </a>
+
+                <!-- Mobile navigation button -->
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+                <div class="collapse navbar-collapse"
+                     id="navbarSupportedContent">
+
+                    <!-- Main navigation links -->
+                    <ul class="navbar-nav me-auto">
+
+                        <!-- Home is available to everyone -->
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Index">
+                                Home
+                            </a>
+                        </li>
+
+                        @if (string.IsNullOrEmpty(
+                                                Context.Session.GetString("AuthToken")))
+                        {
+                            <!-- Links for users who are not logged in -->
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Account"
+                                   asp-action="Login">
+                                    Login
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Account"
+                                   asp-action="Register">
+                                    Register
+                                </a>
+                            </li>
+                        }
+                        else if (
+                        Context.Session.GetString("Role") == "Organiser")
+                        {
+                            <!-- Organiser navigation -->
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Organiser"
+                                   asp-action="Index">
+                                    Dashboard
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Organiser"
+                                   asp-action="Events">
+                                    Manage Events
+                                </a>
+                            </li>
+                        }
+                        else if (
+                        Context.Session.GetString("Role") == "Participant")
+                        {
+                            <!-- Participant navigation -->
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Participant"
+                                   asp-action="Index">
+                                    Upcoming Events
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Participant"
+                                   asp-action="MyEnrollments">
+                                    My Enrolments
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Participant"
+                                   asp-action="MyResults">
+                                    My Results
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Participant"
+                                   asp-action="Profile">
+                                    My Profile
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+
+                    <!-- User information and logout -->
+                    <ul class="navbar-nav ms-auto">
+
+                        @if (!string.IsNullOrEmpty(
+                                                Context.Session.GetString("AuthToken")))
+                        {
+                            <li class="nav-item">
+                                <span class="navbar-text me-3">
+                                    Welcome,
+                                    @Context.Session.GetString("FirstName")
+                                </span>
+                            </li>
+
+                            <li class="nav-item">
+
+                                <!-- Logout must be a POST request -->
+                                <form asp-controller="Account"
+                                      asp-action="Logout"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-outline-light btn-sm mt-1">
+                                        Logout
+                                    </button>
+
+                                </form>
+
+                            </li>
+                        }
+
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main page content -->
+    <div class="container mt-4">
+
+        <!-- Success notification -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show"
+                 role="alert">
+
+                @TempData["Success"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+            </div>
+        }
+
+        <!-- Error notification -->
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show"
+                 role="alert">
+
+                @TempData["Error"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+            </div>
+        }
+
+        <!-- Individual page content appears here -->
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-top footer text-muted mt-5">
+
+        <div class="container py-3">
+            &copy; @DateTime.Now.Year - RaceDayMVC
+            <span class="ms-2">
+                Running | Walking | Cycling
+            </span>
+        </div>
+
+    </footer>
+
+    <!-- JavaScript files -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    <!-- Allows individual views to include additional scripts -->
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
+

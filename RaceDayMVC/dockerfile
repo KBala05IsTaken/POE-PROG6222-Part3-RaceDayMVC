@@ -1,0 +1,42 @@
+﻿
+# ==========================================
+# Stage 1: Build the application
+# ==========================================
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /src
+
+# Copy the project file and restore dependencies.
+# Change RaceDayMVC.csproj if your project has a different name.
+COPY ["RaceDayMVC.csproj", "./"]
+
+RUN dotnet restore "RaceDayMVC.csproj"
+
+# Copy the remaining application files.
+COPY . .
+
+# Publish the application in Release mode.
+RUN dotnet publish "RaceDayMVC.csproj" \
+    -c Release \
+    -o /app/publish \
+    --no-restore
+
+
+# ==========================================
+# Stage 2: Run the application
+# ==========================================
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+
+WORKDIR /app
+
+# Copy only the published application.
+COPY --from=build /app/publish .
+
+# Configure ASP.NET Core to listen on port 8080.
+ENV ASPNETCORE_URLS=http://+:8080
+
+# Inform Docker that the application uses port 8080.
+EXPOSE 8080
+
+# Start the MVC application.
+ENTRYPOINT ["dotnet", "RaceDayMVC.dll"]

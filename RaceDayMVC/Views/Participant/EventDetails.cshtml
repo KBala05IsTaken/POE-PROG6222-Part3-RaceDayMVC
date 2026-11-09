@@ -1,0 +1,70 @@
+﻿@model RaceDayMVC.Models.EventViewModel
+
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<h2>@Model.EventName</h2>
+
+@if (!string.IsNullOrEmpty(Model.BannerImageUrl))
+{
+    <img src="@Model.BannerImageUrl"
+         alt="Event banner"
+         class="img-fluid mb-3"
+         style="max-height:300px" />
+}
+
+<p>@Model.Description</p>
+
+<p><strong>Date:</strong> @Model.EventDate.ToString("dd MMM yyyy")</p>
+<p><strong>Location:</strong> @Model.Location</p>
+<p><strong>Event Type:</strong> @Model.EventType</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<h3>Available Categories</h3>
+
+@if (Model.Categories.Count == 0)
+{
+    <p>No categories are currently available.</p>
+}
+
+@foreach (var category in Model.Categories)
+{
+    <div class="card card-body mb-3">
+        <h5>@category.CategoryName</h5>
+
+        <p>Distance: @category.DistanceKM km</p>
+        <p>Maximum participants: @category.MaximumParticipants</p>
+        <p>Entry fee: @category.EntryFee.ToString("C")</p>
+
+        <!-- Each button enrols the participant in the selected category. -->
+        <form asp-action="Enroll" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="eventId"
+                   value="@Model.EventID" />
+
+            <input type="hidden"
+                   name="categoryId"
+                   value="@category.CategoryID" />
+
+            <button type="submit" class="btn btn-success">
+                Enrol in This Category
+            </button>
+        </form>
+    </div>
+}
+
+<a asp-action="Index" class="btn btn-secondary">
+    Back to Events
+</a>

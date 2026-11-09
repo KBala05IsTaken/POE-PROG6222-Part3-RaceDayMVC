@@ -1,0 +1,58 @@
+﻿@model RaceDayMVC.Models.EventViewModel
+
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<h2>Create Event</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="CreateEvent"
+      method="post"
+      enctype="multipart/form-data">
+
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="EventName"></label>
+        <input asp-for="EventName" class="form-control" />
+        <span asp-validation-for="EventName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EventDate"></label>
+        <input asp-for="EventDate" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Location"></label>
+        <input asp-for="Location" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EventType"></label>
+        <select asp-for="EventType" class="form-select">
+            <option value="Running">Running</option>
+            <option value="Walking">Walking</option>
+            <option value="Cycling">Cycling</option>
+        </select>
+    </div>
+
+    <!-- The file input allows the organiser to upload a banner image. -->
+    <div class="mb-3">
+        <label asp-for="BannerImage">Event Banner</label>
+        <input asp-for="BannerImage"
+               type="file"
+               accept="image/*"
+               class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Create Event</button>
+    <a asp-action="Events" class="btn btn-secondary">Cancel</a>
+</form>

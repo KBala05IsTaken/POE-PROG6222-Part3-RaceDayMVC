@@ -1,0 +1,25 @@
+﻿
+# Ignore compiled files.
+bin/
+obj/
+
+# Ignore Visual Studio files.
+.vs/
+.vscode/
+
+# Ignore Git files.
+.git/
+.gitignore
+
+# Ignore local environment files and secrets.
+.env
+.env.*
+
+# Ignore local build and test output.
+TestResults/
+
+# Ignore local logs.
+*.log
+
+# Ignore Docker output.
+docker-compose.override.yml

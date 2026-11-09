@@ -1,0 +1,62 @@
+﻿@model List<RaceDayMVC.Models.EnrollmentViewModel>
+
+@{
+    ViewData["Title"] = "Enter Results";
+    int eventId = (int)ViewBag.EventID;
+}
+
+<h2>Enter Participant Results</h2>
+
+<p>Enter the finish time and finishing position for each participant.</p>
+
+@foreach (var participant in Model)
+{
+    <div class="card card-body mb-3">
+
+        <h5>@participant.ParticipantName</h5>
+
+        <p>Category: @participant.CategoryName</p>
+        <p>Enrolment status: @participant.Status</p>
+
+        <form asp-action="SaveResult" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="eventId" value="@eventId" />
+
+            <input type="hidden"
+                   name="enrollmentId"
+                   value="@participant.EnrollmentID" />
+
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Finish Time</label>
+                    <input name="finishTime"
+                           type="time"
+                           step="1"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="col-md-4">
+                    <label>Finishing Position</label>
+                    <input name="position"
+                           type="number"
+                           min="1"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="col-md-4">
+                    <label>Pace</label>
+                    <input name="pace"
+                           class="form-control"
+                           placeholder="e.g. 5:30 min/km" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success mt-3">
+                Publish Result
+            </button>
+        </form>
+    </div>
+}

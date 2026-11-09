@@ -1,0 +1,45 @@
+﻿@model List<RaceDayMVC.Models.ResultViewModel>
+
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<h2>My Race Results</h2>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">
+        You do not have any published race results yet.
+    </div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Finish Time</th>
+            <th>Position</th>
+            <th>Pace</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var result in Model)
+        {
+            <tr>
+                <td>@result.EventName</td>
+                <td>@result.EventDate.ToString("dd MMM yyyy")</td>
+                <td>@result.CategoryName</td>
+                <td>
+                    @(result.FinishTime?.ToString(@"hh\:mm\:ss") ?? "Pending")
+                </td>
+                <td>
+                    @(result.Position?.ToString() ?? "Pending")
+                </td>
+                <td>@(result.Pace ?? "Not available")</td>
+            </tr>
+        }
+    </tbody>
+</table>

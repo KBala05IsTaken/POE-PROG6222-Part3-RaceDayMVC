@@ -1,0 +1,59 @@
+﻿@model RaceDayMVC.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Organiser Dashboard";
+}
+
+<h2>Organiser Dashboard</h2>
+
+<p>Welcome, @Context.Session.GetString("FirstName")!</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<!-- Summary cards -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Total Events</h5>
+            <h2>@Model.TotalEvents</h2>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Total Enrolments</h5>
+            <h2>@Model.TotalEnrollments</h2>
+        </div>
+    </div>
+</div>
+
+<h3>Upcoming Events</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Enrolments</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UpcomingEvents)
+        {
+            <tr>
+                <td>@item.EventName</td>
+                <td>@item.EventDate.ToString("dd MMM yyyy")</td>
+                <td>@item.Location</td>
+                <td>@item.TotalEnrollments</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Events" class="btn btn-primary">
+    Manage Events
+</a>
